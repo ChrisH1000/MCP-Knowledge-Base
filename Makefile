@@ -45,8 +45,12 @@ index:  ## Build index - Usage: make index SRC=/path/to/code PATTERNS='["**/*.py
 index-php:  ## Index PHP servers repo (shortcut)
 	$(MAKE) index SRC="/Users/christopher.hill/Desktop/PD/Work repos/php-servers" PATTERNS='["**/*.php","**/*.js","**/*.md","**/*.json"]'
 
-query:  ## Example query
+query:  ## Query the index - Usage: make query Q="your question here"
+	@if [ -z "$(Q)" ]; then \
+		echo "Error: Q not specified. Usage: make query Q=\"your question\""; \
+		exit 1; \
+	fi
 	curl -X POST http://localhost:8000/query \
-		-H "x-api-key: dev-secret" \
+		-H "x-api-key: test-api-key-123" \
 		-H "Content-Type: application/json" \
-		-d '{"q":"How does the RAG server work?","top_k":5}'
+		-d '{"q":"$(Q)","top_k":5}'
