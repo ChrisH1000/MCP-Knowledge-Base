@@ -1,5 +1,7 @@
 """OpenAI client for LLM-based answering."""
 
+from typing import Optional
+
 from openai import OpenAI
 
 from rag_server.core.config import Settings
@@ -11,7 +13,6 @@ logger = get_logger(__name__)
 class OpenAIClient:
     """Client for OpenAI API."""
 
-from typing import Optional
     def __init__(self, settings: Settings):
         """Initialize the OpenAI client.
 

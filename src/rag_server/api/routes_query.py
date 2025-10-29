@@ -1,6 +1,7 @@
 """Query and answer API routes."""
 
 import re
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -30,7 +31,6 @@ async def query(
 ) -> QueryResponse:
     """Search for relevant code/docs."""
     try:
-from typing import List
         logger.info("query_received", query=request.q, top_k=request.top_k)
 
         matches = retriever.retrieve(request.q, request.top_k)

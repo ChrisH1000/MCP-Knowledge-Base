@@ -1,5 +1,7 @@
 """FastAPI application factory."""
 
+from typing import Optional
+
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 
@@ -16,7 +18,6 @@ def api_key_guard(
 ) -> bool:
     """Validate API key from header.
 
-from typing import Optional
     Args:
         x_api_key: API key from header
         settings: Application settings
