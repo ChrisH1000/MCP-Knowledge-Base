@@ -1,5 +1,6 @@
 """Admin API routes (health, config)."""
 
+from typing import Any, Dict
 from fastapi import APIRouter, Depends
 
 from rag_server.core.config import Settings, get_settings
@@ -15,6 +16,6 @@ async def health_check() -> HealthResponse:
 
 
 @router.get("/config")
-async def get_config(settings: Settings = Depends(get_settings)) -> dict[str, any]:
+async def get_config(settings: Settings = Depends(get_settings)) -> Dict[str, Any]:
     """Get current configuration (with secrets redacted)."""
     return settings.model_dump_safe()

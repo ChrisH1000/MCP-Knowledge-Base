@@ -11,6 +11,7 @@ logger = get_logger(__name__)
 class OpenAIClient:
     """Client for OpenAI API."""
 
+from typing import Optional
     def __init__(self, settings: Settings):
         """Initialize the OpenAI client.
 
@@ -18,7 +19,7 @@ class OpenAIClient:
             settings: Application settings
         """
         self.settings = settings
-        self.client: OpenAI | None = None
+        self.client: Optional[OpenAI] = None
 
     def initialize(self) -> None:
         """Initialize the OpenAI client."""

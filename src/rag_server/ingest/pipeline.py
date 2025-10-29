@@ -4,6 +4,7 @@ import json
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 from rag_server.core.config import Settings
 from rag_server.core.logging import get_logger
@@ -16,7 +17,6 @@ logger = get_logger(__name__)
 
 class IngestionPipeline:
     """Orchestrates the ingestion pipeline."""
-
     def __init__(self, settings: Settings):
         """Initialize the pipeline.
 
@@ -31,10 +31,10 @@ class IngestionPipeline:
     def ingest(
         self,
         root: Path,
-        patterns: list[str] | None = None,
-        exclude: list[str] | None = None,
+        patterns: Optional[List[str]] = None,
+        exclude: Optional[List[str]] = None,
         clean: bool = False,
-    ) -> tuple[list[dict[str, any]], dict[str, any]]:
+    ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         """Run the ingestion pipeline.
 
         Args:
@@ -51,7 +51,7 @@ class IngestionPipeline:
 
         # Load existing hashes for incremental indexing
         hashes_file = self.settings.RAG_INDEX_DIR / "file_hashes.json"
-        file_hashes: dict[str, str] = {}
+        file_hashes: Dict[str, str] = {}
         if not clean and hashes_file.exists():
             try:
                 file_hashes = json.loads(hashes_file.read_text())
@@ -59,9 +59,9 @@ class IngestionPipeline:
             except Exception as e:
                 logger.warning("hash_load_error", error=str(e))
 
-        all_chunks: list[dict[str, any]] = []
+        all_chunks: List[Dict[str, Any]] = []
         files_indexed = 0
-        new_hashes: dict[str, str] = {}
+        new_hashes: Dict[str, str] = {}
 
         # Discover and process files
         for file_path in self.reader.discover_files(root, patterns, exclude):

@@ -1,6 +1,6 @@
 """Hybrid retrieval combining vector and keyword search."""
 
-from typing import Any
+from typing import Any, Dict, List
 
 from rag_server.core.config import Settings
 from rag_server.core.logging import get_logger
@@ -24,7 +24,7 @@ class HybridRetriever:
         self.vector_store = VectorStore(settings)
         self.keyword_index = KeywordIndex(settings)
 
-    def build_indices(self, chunks: list[dict[str, Any]]) -> None:
+    def build_indices(self, chunks: List[Dict[str, Any]]) -> None:
         """Build both vector and keyword indices.
 
         Args:
@@ -49,7 +49,7 @@ class HybridRetriever:
         keyword_ok = self.keyword_index.load()
         return vector_ok and keyword_ok
 
-    def retrieve(self, query: str, top_k: int = 8) -> list[Match]:
+    def retrieve(self, query: str, top_k: int = 8) -> List[Match]:
         """Hybrid retrieval with RRF fusion.
 
         Args:
@@ -67,8 +67,8 @@ class HybridRetriever:
 
         # Reciprocal Rank Fusion (RRF)
         k = 60  # RRF constant
-        scores: dict[str, float] = {}
-        doc_map: dict[str, dict[str, Any]] = {}
+        scores: Dict[str, float] = {}
+        doc_map: Dict[str, Dict[str, Any]] = {}
 
         # Add vector scores
         for rank, (doc, score) in enumerate(vector_results, start=1):
@@ -86,7 +86,7 @@ class HybridRetriever:
         sorted_docs = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
 
         # Convert to Match objects
-        matches: list[Match] = []
+        matches: List[Match] = []
         for doc_id, score in sorted_docs:
             doc = doc_map[doc_id]
             matches.append(

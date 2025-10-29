@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -15,7 +16,7 @@ logger = get_logger(__name__)
 router = APIRouter()
 
 # Global retriever instance
-_retriever: HybridRetriever | None = None
+_retriever: Optional[HybridRetriever] = None
 
 
 def get_retriever(settings: Settings = Depends(get_settings)) -> HybridRetriever:

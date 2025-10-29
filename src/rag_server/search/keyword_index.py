@@ -2,7 +2,7 @@
 
 import pickle
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple
 
 from rank_bm25 import BM25Okapi
 
@@ -23,10 +23,10 @@ class KeywordIndex:
         """
         self.settings = settings
         self.index_dir = settings.RAG_INDEX_DIR
-        self.bm25: BM25Okapi | None = None
-        self.documents: list[dict[str, Any]] = []
+        self.bm25: Optional[BM25Okapi] = None
+        self.documents: List[Dict[str, Any]] = []
 
-    def build_index(self, chunks: list[dict[str, Any]]) -> None:
+    def build_index(self, chunks: List[Dict[str, Any]]) -> None:
         """Build BM25 index from chunks.
 
         Args:
@@ -80,7 +80,7 @@ class KeywordIndex:
             logger.error("keyword_index_load_error", error=str(e))
             return False
 
-    def search(self, query: str, top_k: int = 8) -> list[tuple[dict[str, Any], float]]:
+    def search(self, query: str, top_k: int = 8) -> List[Tuple[Dict[str, Any], float]]:
         """Search using BM25.
 
         Args:
@@ -100,7 +100,7 @@ class KeywordIndex:
         # Get top K indices
         top_indices = scores.argsort()[-top_k:][::-1]
 
-        results: list[tuple[dict[str, Any], float]] = []
+        results: List[Tuple[Dict[str, Any], float]] = []
         for idx in top_indices:
             if scores[idx] > 0:
                 results.append((self.documents[int(idx)], float(scores[idx])))

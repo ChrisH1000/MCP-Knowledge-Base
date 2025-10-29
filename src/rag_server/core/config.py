@@ -1,7 +1,7 @@
 """Configuration management using pydantic-settings."""
 
 from pathlib import Path
-from typing import Literal
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -49,16 +49,16 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = Field(default="INFO")
 
     @property
-    def allowed_filetypes(self) -> list[str]:
+    def allowed_filetypes(self) -> List[str]:
         """Parse allowed filetypes into a list."""
         return [ft.strip() for ft in self.RAG_ALLOWED_FILETYPES.split(",")]
 
     @property
-    def exclude_globs(self) -> list[str]:
+    def exclude_globs(self) -> List[str]:
         """Parse exclude globs into a list."""
         return [glob.strip() for glob in self.RAG_EXCLUDE_GLOBS.split(",")]
 
-    def model_dump_safe(self) -> dict[str, any]:
+    def model_dump_safe(self) -> Dict[str, Any]:
         """Dump config with secrets redacted."""
         data = self.model_dump()
         if data.get("OPENAI_API_KEY"):
@@ -73,7 +73,7 @@ class Settings(BaseSettings):
 
 
 # Global settings instance
-_settings: Settings | None = None
+_settings: Optional[Settings] = None
 
 
 def get_settings() -> Settings:

@@ -1,6 +1,6 @@
 """Pydantic schemas for API requests and responses."""
 
-from typing import Any
+from typing import Any, Dict, List
 
 from pydantic import BaseModel, Field
 
@@ -13,7 +13,7 @@ class Match(BaseModel):
     start_line: int = Field(description="Starting line number", ge=1)
     end_line: int = Field(description="Ending line number", ge=1)
     snippet: str = Field(description="Code/text snippet")
-    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
 
 class Citation(BaseModel):
@@ -40,15 +40,15 @@ class AnswerRequest(QueryRequest):
 class QueryResponse(BaseModel):
     """Response with search matches."""
 
-    matches: list[Match] = Field(description="Ranked search results")
+    matches: List[Match] = Field(description="Ranked search results")
 
 
 class AnswerResponse(BaseModel):
     """Response with generated answer and citations."""
 
     final: str = Field(description="Generated answer")
-    citations: list[Citation] = Field(description="Source citations")
-    matches: list[Match] = Field(description="Retrieved context matches")
+    citations: List[Citation] = Field(description="Source citations")
+    matches: List[Match] = Field(description="Retrieved context matches")
 
 
 class IndexBuildRequest(BaseModel):
@@ -56,10 +56,10 @@ class IndexBuildRequest(BaseModel):
 
     root: str = Field(default="./", description="Root directory to index")
     clean: bool = Field(default=False, description="Clean index before building")
-    patterns: list[str] = Field(
+    patterns: List[str] = Field(
         default_factory=lambda: ["**/*"], description="Glob patterns to include"
     )
-    exclude: list[str] = Field(
+    exclude: List[str] = Field(
         default_factory=lambda: [], description="Glob patterns to exclude"
     )
 

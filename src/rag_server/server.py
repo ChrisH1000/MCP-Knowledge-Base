@@ -11,11 +11,12 @@ logger = get_logger(__name__)
 
 
 def api_key_guard(
-    x_api_key: str | None = Header(default=None),
+    x_api_key: Optional[str] = Header(default=None),
     settings: Settings = Depends(get_settings),
 ) -> bool:
     """Validate API key from header.
 
+from typing import Optional
     Args:
         x_api_key: API key from header
         settings: Application settings

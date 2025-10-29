@@ -3,7 +3,7 @@
 import json
 import pickle
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple
 
 import faiss
 import numpy as np
@@ -26,9 +26,9 @@ class VectorStore:
         """
         self.settings = settings
         self.index_dir = settings.RAG_INDEX_DIR
-        self.model: SentenceTransformer | None = None
-        self.index: faiss.Index | None = None
-        self.documents: list[dict[str, Any]] = []
+        self.model: Optional[SentenceTransformer] = None
+        self.index: faiss.Optional[Index] = None
+        self.documents: List[Dict[str, Any]] = []
 
     def load_model(self) -> None:
         """Load the embedding model."""
@@ -37,7 +37,7 @@ class VectorStore:
             self.model = SentenceTransformer(self.settings.RAG_EMBEDDING_MODEL)
             logger.info("model_loaded")
 
-    def build_index(self, chunks: list[dict[str, Any]]) -> None:
+    def build_index(self, chunks: List[Dict[str, Any]]) -> None:
         """Build FAISS index from chunks.
 
         Args:
@@ -107,7 +107,7 @@ class VectorStore:
             logger.error("index_load_error", error=str(e))
             return False
 
-    def search(self, query: str, top_k: int = 8) -> list[tuple[dict[str, Any], float]]:
+    def search(self, query: str, top_k: int = 8) -> List[Tuple[Dict[str, Any], float]]:
         """Search for similar chunks.
 
         Args:
@@ -131,7 +131,7 @@ class VectorStore:
         distances, indices = self.index.search(query_embedding.astype("float32"), top_k)
 
         # Prepare results
-        results: list[tuple[dict[str, Any], float]] = []
+        results: List[Tuple[Dict[str, Any], float]] = []
         for dist, idx in zip(distances[0], indices[0]):
             if idx < len(self.documents):
                 # Convert distance to similarity score (inverse)

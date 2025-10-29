@@ -2,7 +2,7 @@
 
 import hashlib
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, List, Optional, Tuple
 
 from rag_server.core.config import Settings
 from rag_server.core.logging import get_logger
@@ -24,8 +24,8 @@ class FileReader:
     def discover_files(
         self,
         root: Path,
-        patterns: list[str] | None = None,
-        exclude: list[str] | None = None,
+        patterns: Optional[List[str]] = None,
+        exclude: Optional[List[str]] = None,
     ) -> Iterator[Path]:
         """Discover files matching patterns and exclusions.
 
@@ -73,7 +73,7 @@ class FileReader:
 
         logger.info("discovery_complete", files_found=discovered)
 
-    def read_file(self, path: Path) -> tuple[str, str]:
+    def read_file(self, path: Path) -> Tuple[str, str]:
         """Read file content and compute hash.
 
         Args:
@@ -90,7 +90,7 @@ class FileReader:
             logger.warning("file_read_error", path=str(path), error=str(e))
             return "", ""
 
-    def should_reindex(self, path: Path, stored_hash: str | None) -> bool:
+    def should_reindex(self, path: Path, stored_hash: Optional[str]) -> bool:
         """Check if file should be reindexed based on content hash.
 
         Args:

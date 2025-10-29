@@ -1,9 +1,11 @@
 """Prompt templates for LLM-based answering."""
 
+from typing import List
+
 from rag_server.core.schemas import Match
 
 
-def build_grounding_prompt(question: str, matches: list[Match]) -> str:
+def build_grounding_prompt(question: str, matches: List[Match]) -> str:
     """Build a grounded QA prompt from matches.
 
     Args:
@@ -14,7 +16,7 @@ def build_grounding_prompt(question: str, matches: list[Match]) -> str:
         Formatted prompt
     """
     # Build context from matches
-    context_parts: list[str] = []
+    context_parts: List[str] = []
     for i, match in enumerate(matches, start=1):
         context_parts.append(
             f"[{i}] File: {match.path} (lines {match.start_line}-{match.end_line})\n"

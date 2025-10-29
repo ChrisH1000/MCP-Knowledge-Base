@@ -1,6 +1,6 @@
 """Text chunking strategies for embedding."""
 
-from typing import Any
+from typing import Any, Dict, List, Optional
 
 from rag_server.core.config import Settings
 from rag_server.core.logging import get_logger
@@ -16,7 +16,7 @@ class Chunk:
         content: str,
         start_line: int,
         end_line: int,
-        metadata: dict[str, Any] | None = None,
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """Initialize chunk.
 
@@ -44,7 +44,7 @@ class TextChunker:
         self.chunk_size = settings.RAG_CHUNK_SIZE
         self.overlap = settings.RAG_CHUNK_OVERLAP
 
-    def chunk(self, content: str, path: str, language: str) -> list[Chunk]:
+    def chunk(self, content: str, path: str, language: str) -> List[Chunk]:
         """Chunk content into overlapping windows.
 
         Args:
@@ -56,10 +56,10 @@ class TextChunker:
             List of chunks with metadata
         """
         lines = content.splitlines(keepends=True)
-        chunks: list[Chunk] = []
+        chunks: List[Chunk] = []
 
         # Simple line-based chunking with character limit
-        current_chunk_lines: list[str] = []
+        current_chunk_lines: List[str] = []
         current_chunk_start = 1
         current_length = 0
 
@@ -83,7 +83,7 @@ class TextChunker:
 
                 # Start new chunk with overlap
                 overlap_chars = 0
-                overlap_lines: list[str] = []
+                overlap_lines: List[str] = []
                 for prev_line in reversed(current_chunk_lines):
                     if overlap_chars + len(prev_line) <= self.overlap:
                         overlap_lines.insert(0, prev_line)

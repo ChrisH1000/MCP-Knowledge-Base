@@ -30,6 +30,7 @@ async def query(
 ) -> QueryResponse:
     """Search for relevant code/docs."""
     try:
+from typing import List
         logger.info("query_received", query=request.q, top_k=request.top_k)
 
         matches = retriever.retrieve(request.q, request.top_k)
@@ -90,7 +91,7 @@ async def answer(
         raise HTTPException(status_code=500, detail=f"Answer generation failed: {str(e)}")
 
 
-def _extract_citations(answer: str, matches: list) -> list[Citation]:
+def _extract_citations(answer: str, matches: list) -> List[Citation]:
     """Extract citations from the answer text.
 
     Args:
@@ -100,7 +101,7 @@ def _extract_citations(answer: str, matches: list) -> list[Citation]:
     Returns:
         List of citations
     """
-    citations: list[Citation] = []
+    citations: List[Citation] = []
 
     # Try to extract citations from answer
     citation_pattern = r"([a-zA-Z0-9/_.-]+):(\d+)-(\d+)"
