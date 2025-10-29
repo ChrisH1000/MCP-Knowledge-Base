@@ -3,11 +3,12 @@
 help:  ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-install:  ## Install dependencies with uv
-	uv venv
-	. .venv/bin/activate && uv pip install -e ".[dev]"
+install:  ## Install dependencies
+	python3 -m venv .venv
+	. .venv/bin/activate && pip install --upgrade pip && pip install -e ".[dev]"
 
 run:  ## Run the API server locally
+	@if [ ! -d ".venv" ]; then echo "Error: .venv not found. Run 'make install' first."; exit 1; fi
 	. .venv/bin/activate && python -m uvicorn rag_server.main:app --reload --port 8000
 
 test:  ## Run tests
