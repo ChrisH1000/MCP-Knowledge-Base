@@ -8,16 +8,16 @@ install:  ## Install dependencies with uv
 	. .venv/bin/activate && uv pip install -e ".[dev]"
 
 run:  ## Run the API server locally
-	uv run python -m uvicorn main:app --reload --port 8000 --app-dir src
+	. .venv/bin/activate && python -m uvicorn rag_server.main:app --reload --port 8000
 
 test:  ## Run tests
-	uv run pytest -v
+	. .venv/bin/activate && pytest -v
 
 lint:  ## Run linter
-	uv run ruff check .
+	. .venv/bin/activate && ruff check .
 
 format:  ## Format code
-	uv run ruff format .
+	. .venv/bin/activate && ruff format .
 
 clean:  ## Clean build artifacts and cache
 	rm -rf .venv build dist *.egg-info __pycache__ .pytest_cache .ruff_cache
@@ -30,11 +30,19 @@ docker-build:  ## Build Docker image
 docker-run:  ## Run with docker-compose
 	docker-compose up
 
-index:  ## Build index (example)
+index:  ## Build index - Usage: make index SRC=/path/to/code PATTERNS='["**/*.py","**/*.js"]'
+	@if [ -z "$(SRC)" ]; then \
+		echo "Error: SRC not specified. Usage: make index SRC=/path/to/code"; \
+		echo "Optional: PATTERNS='[\"**/*.py\",\"**/*.js\"]' CLEAN=true"; \
+		exit 1; \
+	fi
 	curl -X POST http://localhost:8000/index/build \
-		-H "x-api-key: dev-secret" \
+		-H "x-api-key: test-api-key-123" \
 		-H "Content-Type: application/json" \
-		-d '{"root":"./","clean":true}'
+		-d '{"root":"$(SRC)","patterns":$(if $(PATTERNS),$(PATTERNS),["**/*"]),"clean":$(if $(CLEAN),$(CLEAN),true)}'
+
+index-php:  ## Index PHP servers repo (shortcut)
+	$(MAKE) index SRC="/Users/christopher.hill/Desktop/PD/Work repos/php-servers" PATTERNS='["**/*.php","**/*.js","**/*.md","**/*.json"]'
 
 query:  ## Example query
 	curl -X POST http://localhost:8000/query \
