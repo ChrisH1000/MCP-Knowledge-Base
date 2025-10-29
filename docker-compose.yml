@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  rag-server:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./:/work:ro
+    environment:
+      - RAG_DATA_DIR=/work
+      - RAG_INDEX_DIR=/app/data/index
+      - RAG_API_KEY=dev-secret
+      - LOG_LEVEL=INFO
+    restart: unless-stopped
