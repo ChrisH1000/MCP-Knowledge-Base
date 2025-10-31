@@ -1,5 +1,6 @@
 """Configuration management using pydantic-settings."""
 
+import os
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
 
@@ -48,6 +49,11 @@ class Settings(BaseSettings):
     # Logging
     LOG_LEVEL: str = Field(default="INFO")
 
+    # LangSmith Tracing
+    LANGSMITH_API_KEY: str = Field(default="")
+    LANGSMITH_TRACING: str = Field(default="false")
+    LANGCHAIN_PROJECT: str = Field(default="default")
+
     @property
     def allowed_filetypes(self) -> List[str]:
         """Parse allowed filetypes into a list."""
@@ -65,6 +71,8 @@ class Settings(BaseSettings):
             data["OPENAI_API_KEY"] = "***REDACTED***"
         if data.get("RAG_API_KEY"):
             data["RAG_API_KEY"] = "***REDACTED***"
+        if data.get("LANGSMITH_API_KEY"):
+            data["LANGSMITH_API_KEY"] = "***REDACTED***"
         # Convert Path objects to strings for JSON serialization
         for key, value in data.items():
             if isinstance(value, Path):
@@ -76,6 +84,22 @@ class Settings(BaseSettings):
 _settings: Optional[Settings] = None
 
 
+def _setup_langsmith(settings: Settings) -> None:
+    """Set up LangSmith tracing environment variables.
+
+    Args:
+        settings: Application settings
+    """
+    if settings.LANGSMITH_TRACING.lower() == "true":
+        os.environ["LANGSMITH_TRACING"] = "true"
+
+        if settings.LANGSMITH_API_KEY:
+            os.environ["LANGSMITH_API_KEY"] = settings.LANGSMITH_API_KEY
+
+        if settings.LANGCHAIN_PROJECT:
+            os.environ["LANGCHAIN_PROJECT"] = settings.LANGCHAIN_PROJECT
+
+
 def get_settings() -> Settings:
     """Get or create the global settings instance."""
     global _settings
@@ -84,4 +108,6 @@ def get_settings() -> Settings:
         # Ensure directories exist
         _settings.RAG_DATA_DIR.mkdir(parents=True, exist_ok=True)
         _settings.RAG_INDEX_DIR.mkdir(parents=True, exist_ok=True)
+        # Set up LangSmith tracing
+        _setup_langsmith(_settings)
     return _settings

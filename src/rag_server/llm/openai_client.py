@@ -2,7 +2,8 @@
 
 from typing import Optional
 
-from openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage
 
 from rag_server.core.config import Settings
 from rag_server.core.logging import get_logger
@@ -11,7 +12,7 @@ logger = get_logger(__name__)
 
 
 class OpenAIClient:
-    """Client for OpenAI API."""
+    """Client for OpenAI API using LangChain (with LangSmith tracing)."""
 
     def __init__(self, settings: Settings):
         """Initialize the OpenAI client.
@@ -20,18 +21,22 @@ class OpenAIClient:
             settings: Application settings
         """
         self.settings = settings
-        self.client: Optional[OpenAI] = None
+        self.client: Optional[ChatOpenAI] = None
 
     def initialize(self) -> None:
-        """Initialize the OpenAI client."""
+        """Initialize the LangChain OpenAI client."""
         if not self.settings.OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY not configured")
 
-        self.client = OpenAI(api_key=self.settings.OPENAI_API_KEY)
-        logger.info("openai_client_initialized")
+        self.client = ChatOpenAI(
+            model=self.settings.LLM_MODEL,
+            api_key=self.settings.OPENAI_API_KEY,
+            temperature=0.1,
+        )
+        logger.info("openai_client_initialized", model=self.settings.LLM_MODEL)
 
     def generate(self, prompt: str, max_tokens: int = 512) -> str:
-        """Generate a response using OpenAI.
+        """Generate a response using OpenAI via LangChain.
 
         Args:
             prompt: Input prompt
@@ -46,14 +51,13 @@ class OpenAIClient:
         assert self.client is not None
 
         try:
-            response = self.client.chat.completions.create(
-                model=self.settings.LLM_MODEL,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=max_tokens,
-                temperature=0.1,
+            # LangChain automatically traces this to LangSmith
+            response = self.client.invoke(
+                [HumanMessage(content=prompt)],
+                config={"max_tokens": max_tokens}
             )
 
-            return response.choices[0].message.content or ""
+            return response.content if response.content else ""
 
         except Exception as e:
             logger.error("openai_generation_error", error=str(e))

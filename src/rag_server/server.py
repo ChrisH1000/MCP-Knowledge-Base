@@ -42,6 +42,15 @@ def create_app() -> FastAPI:
     # Configure logging
     configure_logging()
 
+    # Log LangSmith configuration
+    settings = get_settings()
+    if settings.LANGSMITH_TRACING.lower() == "true":
+        logger.info(
+            "langsmith_enabled",
+            project=settings.LANGCHAIN_PROJECT,
+            tracing=True
+        )
+
     # Create app
     app = FastAPI(
         title="RAG Server",
