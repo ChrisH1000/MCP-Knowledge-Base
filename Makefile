@@ -1,4 +1,4 @@
-.PHONY: help install run test lint format clean docker-build docker-run index query
+.PHONY: help install run test lint format clean docker-build docker-run index query answer
 
 help:  ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -51,6 +51,16 @@ query:  ## Query the index - Usage: make query Q="your question here"
 		exit 1; \
 	fi
 	curl -X POST http://localhost:8000/query \
+		-H "x-api-key: test-api-key-123" \
+		-H "Content-Type: application/json" \
+		-d '{"q":"$(Q)","top_k":5}'
+
+answer:  ## Generate LLM answer - Usage: make answer Q="your question here"
+	@if [ -z "$(Q)" ]; then \
+		echo "Error: Q not specified. Usage: make answer Q=\"your question\""; \
+		exit 1; \
+	fi
+	curl -X POST http://localhost:8000/answer \
 		-H "x-api-key: test-api-key-123" \
 		-H "Content-Type: application/json" \
 		-d '{"q":"$(Q)","top_k":5}'
