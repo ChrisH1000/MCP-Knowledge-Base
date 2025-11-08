@@ -48,7 +48,7 @@ uvicorn rag_server.main:app --host 0.0.0.0 --port 8000 --reload
 # Index your codebase
 curl -X POST http://localhost:8000/index/build \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: test-api-key-123" \
+  -H "X-API-Key: $RAG_API_KEY" \
   -d '{
     "root": "/path/to/your/code",
     "patterns": ["**/*.py", "**/*.js", "**/*.md"],
@@ -62,7 +62,7 @@ curl -X POST http://localhost:8000/index/build \
 # Search for information
 curl -X POST http://localhost:8000/query \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: test-api-key-123" \
+  -H "X-API-Key: $RAG_API_KEY" \
   -d '{
     "q": "How do I configure settings?",
     "top_k": 5
@@ -92,17 +92,17 @@ Sample Query: "How do I configure the RAG server settings?"
 curl http://localhost:8000/health
 
 # Get index statistics
-curl -H "X-API-Key: test-api-key-123" \
+curl -H "X-API-Key: $RAG_API_KEY" \
   http://localhost:8000/index/stats
 
 # Get current configuration
-curl -H "X-API-Key: test-api-key-123" \
+curl -H "X-API-Key: $RAG_API_KEY" \
   http://localhost:8000/config
 
 # Incremental index update (only changed files)
 curl -X POST http://localhost:8000/index/incremental \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: test-api-key-123" \
+  -H "X-API-Key: $RAG_API_KEY" \
   -d '{"root": "/path/to/code"}'
 ```
 

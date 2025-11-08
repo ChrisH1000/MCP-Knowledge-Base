@@ -1,4 +1,5 @@
 """Test LangSmith tracing with a simple LangChain operation."""
+
 import os
 import sys
 
@@ -8,6 +9,7 @@ os.environ["LANGCHAIN_PROJECT"] = "mcp-knowledge-server"
 
 # Load API key from .env
 from pathlib import Path
+
 env_file = Path(".env")
 if env_file.exists():
     for line in env_file.read_text().splitlines():
@@ -26,20 +28,22 @@ print()
 try:
     from langchain_core.messages import HumanMessage, SystemMessage
     from langchain_core.prompts import ChatPromptTemplate
-    
+
     print("✅ LangChain imports successful")
     print()
     print("Creating a simple traced operation...")
-    
+
     # Create a simple prompt
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are a helpful assistant for testing LangSmith tracing."),
-        ("human", "{input}")
-    ])
-    
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "You are a helpful assistant for testing LangSmith tracing."),
+            ("human", "{input}"),
+        ]
+    )
+
     # Format the prompt (this will be traced)
     formatted = prompt.format(input="Hello, testing LangSmith!")
-    
+
     print(f"✅ Prompt formatted: {formatted[:100]}...")
     print()
     print("🎉 LangSmith tracing is active!")
@@ -53,8 +57,9 @@ try:
     print("1. Set OPENAI_API_KEY in your .env file")
     print("2. Set RAG_LLM_PROVIDER=openai in your .env file")
     print("3. Make a request to the /answer endpoint")
-    
+
 except Exception as e:
     print(f"❌ Error: {e}")
     import traceback
+
     traceback.print_exc()

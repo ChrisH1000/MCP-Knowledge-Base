@@ -23,7 +23,9 @@ class OllamaClient:
             model=settings.LLM_MODEL,
             temperature=0.1,
         )
-        logger.info("ollama_client_initialized", endpoint=settings.OLLAMA_ENDPOINT, model=settings.LLM_MODEL)
+        logger.info(
+            "ollama_client_initialized", endpoint=settings.OLLAMA_ENDPOINT, model=settings.LLM_MODEL
+        )
 
     async def generate(self, prompt: str, max_tokens: int = 512) -> str:
         """Generate a response using Ollama via LangChain.
@@ -37,10 +39,7 @@ class OllamaClient:
         """
         try:
             # LangChain automatically traces this to LangSmith
-            response = await self.client.ainvoke(
-                prompt,
-                config={"max_tokens": max_tokens}
-            )
+            response = await self.client.ainvoke(prompt, config={"max_tokens": max_tokens})
 
             return response if isinstance(response, str) else str(response)
 

@@ -26,7 +26,7 @@ We updated your LLM clients to use LangChain wrappers:
 from openai import OpenAI
 client.chat.completions.create(...)
 
-# After  
+# After
 from langchain_openai import ChatOpenAI
 client.invoke([HumanMessage(content=prompt)])
 ```
@@ -67,7 +67,7 @@ client.ainvoke(prompt)
 3. **Make an LLM request:**
    ```bash
    curl -X POST http://localhost:8000/answer \
-     -H "x-api-key: test-api-key-123" \
+     -H "x-api-key: $RAG_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"q":"How does this codebase work?","top_k":5}'
    ```
@@ -96,7 +96,7 @@ Trace appears in dashboard under "mcp-knowledge-server"
 ### ✅ What Will Be Traced
 - All `/answer` endpoint requests (uses LLM)
 - OpenAI API calls
-- Ollama API calls  
+- Ollama API calls
 - Full prompts and responses
 - Token usage and latency
 
@@ -107,7 +107,7 @@ Trace appears in dashboard under "mcp-knowledge-server"
 - File ingestion
 
 ### 🔑 Key Requirement
-**The project only appears after the first LLM call is made.** 
+**The project only appears after the first LLM call is made.**
 
 If you:
 - Only use `/query` endpoint → No traces (no LLM used)
@@ -136,7 +136,7 @@ python3 test_langsmith_tracing.py
 # Test 3: Make a real request (requires OpenAI key)
 # Start server, then:
 curl -X POST http://localhost:8000/answer \
-  -H "x-api-key: test-api-key-123" \
+  -H "x-api-key: $RAG_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"q":"Test question","top_k":5}'
 ```

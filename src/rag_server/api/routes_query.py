@@ -60,10 +60,11 @@ async def answer(
 
         # If no LLM provider, return retrieval-only response
         if settings.RAG_LLM_PROVIDER == "none":
-            final_answer = "Retrieval-only mode (no LLM provider configured). See matches for context."
+            final_answer = (
+                "Retrieval-only mode (no LLM provider configured). See matches for context."
+            )
             citations = [
-                Citation(path=m.path, start_line=m.start_line, end_line=m.end_line)
-                for m in matches
+                Citation(path=m.path, start_line=m.start_line, end_line=m.end_line) for m in matches
             ]
             return AnswerResponse(final=final_answer, citations=citations, matches=matches)
 

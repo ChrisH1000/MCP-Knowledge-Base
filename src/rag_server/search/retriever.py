@@ -92,11 +92,11 @@ class HybridRetriever:
             matches.append(
                 Match(
                     score=score,
-                    path=doc['metadata']['path'],
-                    start_line=doc['start_line'],
-                    end_line=doc['end_line'],
-                    snippet=doc['content'][:500],  # Limit snippet length
-                    metadata=doc['metadata'],
+                    path=doc["metadata"]["path"],
+                    start_line=doc["start_line"],
+                    end_line=doc["end_line"],
+                    snippet=doc["content"][:500],  # Limit snippet length
+                    metadata=doc["metadata"],
                 )
             )
 

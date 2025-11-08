@@ -59,9 +59,7 @@ class IndexBuildRequest(BaseModel):
     patterns: List[str] = Field(
         default_factory=lambda: ["**/*"], description="Glob patterns to include"
     )
-    exclude: List[str] = Field(
-        default_factory=lambda: [], description="Glob patterns to exclude"
-    )
+    exclude: List[str] = Field(default_factory=lambda: [], description="Glob patterns to exclude")
 
 
 class IndexBuildResponse(BaseModel):

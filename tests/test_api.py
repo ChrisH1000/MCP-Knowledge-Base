@@ -39,7 +39,7 @@ def test_authorized_request_missing_root(client):
     """Test authorized request with bad data."""
     response = client.post(
         "/index/build",
-        headers={"x-api-key": "dev-secret"},
+        headers={"x-api-key": "test-api-key-123"},
         json={"root": "/nonexistent"},
     )
     assert response.status_code == 400

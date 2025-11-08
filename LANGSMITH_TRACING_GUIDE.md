@@ -115,7 +115,7 @@ langsmith_enabled project=mcp-knowledge-server tracing=True
 
 ```bash
 curl -X POST http://localhost:8000/answer \
-  -H "x-api-key: test-api-key-123" \
+  -H "x-api-key: $RAG_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "q": "How does this codebase work?",
@@ -219,7 +219,7 @@ Then check https://smith.langchain.com/ for the trace.
    ```python
    # ❌ Won't trace
    from openai import OpenAI
-   
+
    # ✅ Will trace
    from langchain_openai import ChatOpenAI
    ```
@@ -273,7 +273,7 @@ RAG_LLM_PROVIDER=none  # Won't make LLM calls!
 3. **Make an answer request:**
    ```bash
    curl -X POST http://localhost:8000/answer \
-     -H "x-api-key: test-api-key-123" \
+     -H "x-api-key: $RAG_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"q":"What is this codebase?","top_k":5}'
    ```

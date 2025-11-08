@@ -38,7 +38,7 @@ index:  ## Build index - Usage: make index SRC=/path/to/code PATTERNS='["**/*.py
 		exit 1; \
 	fi
 	curl -X POST http://localhost:8000/index/build \
-		-H "x-api-key: test-api-key-123" \
+		-H "x-api-key: $(RAG_API_KEY)" \
 		-H "Content-Type: application/json" \
 		-d '{"root":"$(SRC)","patterns":$(if $(PATTERNS),$(PATTERNS),["**/*"]),"clean":$(if $(CLEAN),$(CLEAN),true)}'
 
@@ -51,7 +51,7 @@ query:  ## Query the index - Usage: make query Q="your question here"
 		exit 1; \
 	fi
 	curl -X POST http://localhost:8000/query \
-		-H "x-api-key: test-api-key-123" \
+		-H "x-api-key: $(RAG_API_KEY)" \
 		-H "Content-Type: application/json" \
 		-d '{"q":"$(Q)","top_k":5}'
 
@@ -61,6 +61,6 @@ answer:  ## Generate LLM answer - Usage: make answer Q="your question here"
 		exit 1; \
 	fi
 	curl -X POST http://localhost:8000/answer \
-		-H "x-api-key: test-api-key-123" \
+		-H "x-api-key: $(RAG_API_KEY)" \
 		-H "Content-Type: application/json" \
 		-d '{"q":"$(Q)","top_k":5}'

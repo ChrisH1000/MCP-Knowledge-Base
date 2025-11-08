@@ -53,8 +53,7 @@ class OpenAIClient:
         try:
             # LangChain automatically traces this to LangSmith
             response = self.client.invoke(
-                [HumanMessage(content=prompt)],
-                config={"max_tokens": max_tokens}
+                [HumanMessage(content=prompt)], config={"max_tokens": max_tokens}
             )
 
             return response.content if response.content else ""

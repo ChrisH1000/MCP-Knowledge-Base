@@ -17,6 +17,7 @@ logger = get_logger(__name__)
 
 class IngestionPipeline:
     """Orchestrates the ingestion pipeline."""
+
     def __init__(self, settings: Settings):
         """Initialize the pipeline.
 
@@ -74,7 +75,9 @@ class IngestionPipeline:
                 relative_path = str(file_path.relative_to(root))
 
                 # Check if reindexing needed
-                if not clean and not self.reader.should_reindex(file_path, file_hashes.get(relative_path)):
+                if not clean and not self.reader.should_reindex(
+                    file_path, file_hashes.get(relative_path)
+                ):
                     logger.debug("skipping_unchanged", path=relative_path)
                     new_hashes[relative_path] = file_hashes[relative_path]
                     continue
@@ -88,16 +91,18 @@ class IngestionPipeline:
 
                 # Convert to dicts for storage
                 for chunk in chunks:
-                    all_chunks.append({
-                        "content": chunk.content,
-                        "start_line": chunk.start_line,
-                        "end_line": chunk.end_line,
-                        "metadata": {
-                            "path": relative_path,
-                            "language": language,
-                            "sha256": sha256,
-                        },
-                    })
+                    all_chunks.append(
+                        {
+                            "content": chunk.content,
+                            "start_line": chunk.start_line,
+                            "end_line": chunk.end_line,
+                            "metadata": {
+                                "path": relative_path,
+                                "language": language,
+                                "sha256": sha256,
+                            },
+                        }
+                    )
 
                 new_hashes[relative_path] = sha256
                 files_indexed += 1

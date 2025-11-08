@@ -45,11 +45,7 @@ def create_app() -> FastAPI:
     # Log LangSmith configuration
     settings = get_settings()
     if settings.LANGSMITH_TRACING.lower() == "true":
-        logger.info(
-            "langsmith_enabled",
-            project=settings.LANGCHAIN_PROJECT,
-            tracing=True
-        )
+        logger.info("langsmith_enabled", project=settings.LANGCHAIN_PROJECT, tracing=True)
 
     # Create app
     app = FastAPI(
